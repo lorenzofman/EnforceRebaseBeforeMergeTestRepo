@@ -1,0 +1,23 @@
+# This is a basic workflow to help you get started with Actions
+
+name: up-to-date-to-base
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if branch is up to date with base
+        run: |
+          BASE_BRANCH=${{github.event.pull_request.base.ref }}
+          git fetch origin $BASE_BRANCH
+          BASE_SHA=$(git rev-parse origin/$BASE_BRANCH)
+          MERGE_BASE=$(git merge-base HEAD origin/$BASE_BRANCH)
+          if [ "$BASE_SHA" != "$MERGE_BASE" ]; then
+            echo "❌ Branch is not up-to-date with $BASE_BRANCH. Please rebase."
+            exit 1
+          fi
