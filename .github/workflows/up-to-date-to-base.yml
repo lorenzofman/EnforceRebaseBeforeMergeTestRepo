@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check if branch is up to date with base
-        run:
+        run: |
           BASE_BRANCH=${{github.event.pull_request.base.ref }}
           git fetch origin $BASE_BRANCH
           BASE_SHA=$(git rev-parse origin/$BASE_BRANCH)
